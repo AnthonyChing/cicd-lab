@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: write
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
@@ -44,13 +45,11 @@ jobs:
       - name: Lint
         run: npm run lint
 
-      - name: Test
-        run: npm test
+      - name: 'Test'
+        run: npx vitest --coverage.enabled true
 
-      - name: Test Report
-        uses: dorny/test-reporter@v3
-        if: ${{ !cancelled() }} # run this step even if previous step failed
+      - name: Report Coverage
+        uses: davelosert/vitest-coverage-report-action@v2
+        if: always()
         with:
-          name: JEST Tests # Name of the check run which will be created
-          path: reports/jest-*.xml # Path to test results
-          reporter: jest-junit # Format of test results
+          threshold-icons: "{0: '🔴', 80: '🟠', 90: '🟢'}"
