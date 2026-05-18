@@ -9,7 +9,7 @@ const config: VitestConfig = {
     exclude: ['dist/**', 'node_modules/**'],
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json', 'json-summary'],
+      reporter: ['text', 'json', 'json-summary']
     }
   }
 };
