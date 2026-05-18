@@ -46,33 +46,11 @@ jobs:
       
       - name: Test
         run: npm test
-
-      - name: Compute image tag
-        id: meta
-        run: |
-          BRANCH_NAME="${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
-
-          if [[ "$BRANCH_NAME" == release/* ]]; then
-            VERSION="${BRANCH_NAME#release/}"
-            IMAGE_TAG="release-${VERSION}"
-          else
-            IMAGE_TAG="sha-${GITHUB_SHA::7}"
-          fi
-
-          echo "branch_name=$BRANCH_NAME" >> "$GITHUB_OUTPUT"
-          echo "image_tag=$IMAGE_TAG" >> "$GITHUB_OUTPUT"
-
-      - name: Print image metadata
-        run: |
-          echo "Node version: ${{ matrix.node-version }}"
-          echo "Branch: ${{ steps.meta.outputs.branch_name }}"
-          echo "Image tag: ${{ steps.meta.outputs.image_tag }}"
-
-      - name: Build Docker image
-        if: ${{ matrix.node-version == '24' }}
-        run: docker build -t my-app:${{ steps.meta.outputs.image_tag }} .
-
-  cd:
-    if: ${{ startsWith(github.ref, 'refs/heads/release/') }}
-    needs: ci
-    uses: ./.github/workflows/cd.yaml
+     
+      - name: Test Report
+        uses: dorny/test-reporter@v3
+        if: ${{ !cancelled() }}       # run this step even if previous step failed
+        with:
+          name: JEST Tests            # Name of the check run which will be created
+          path: reports/jest-*.xml    # Path to test results
+          reporter: jest-junit        # Format of test results
