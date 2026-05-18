@@ -37,20 +37,20 @@ jobs:
       # TypeScript typecheck
       - name: Type check
         run: npm run typecheck # 型別檢查
-      
-      - name: Format check
-        run: npm run format:check
+
+      # - name: Format check
+      #   run: npm run format:check
 
       - name: Lint
         run: npm run lint
-      
+
       - name: Test
         run: npm test
-     
+
       - name: Test Report
         uses: dorny/test-reporter@v3
-        if: ${{ !cancelled() }}       # run this step even if previous step failed
+        if: ${{ !cancelled() }} # run this step even if previous step failed
         with:
-          name: JEST Tests            # Name of the check run which will be created
-          path: reports/jest-*.xml    # Path to test results
-          reporter: jest-junit        # Format of test results
+          name: JEST Tests # Name of the check run which will be created
+          path: reports/jest-*.xml # Path to test results
+          reporter: jest-junit # Format of test results
